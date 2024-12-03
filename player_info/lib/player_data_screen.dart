@@ -113,9 +113,6 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                       ),
                     );
                     listOfPlayer.clear();
-                    QuerySnapshot response = await FirebaseFirestore.instance
-                        .collection('Player Info')
-                        .get();
 
                     isUpdateDate = false;
                     setState(() {});
@@ -136,9 +133,6 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                         ),
                       );
                       listOfPlayer.clear();
-                      QuerySnapshot response = await FirebaseFirestore.instance
-                          .collection('Player Info')
-                          .get();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
