@@ -2,9 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:player_info/player_model.dart';
+import 'package:player_info/model/player_model.dart';
+import 'package:player_info/view/login_screen.dart';
 
 class PlayerDataScreen extends StatefulWidget {
   const PlayerDataScreen({super.key});
@@ -41,6 +43,22 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
             color: Colors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -133,12 +151,6 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                         ),
                       );
                       listOfPlayer.clear();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Something error"),
-                        ),
-                      );
                     }
                   }
                   listOfPlayer.clear();
