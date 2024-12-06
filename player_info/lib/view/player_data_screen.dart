@@ -38,6 +38,7 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
   }
 
   void getData() async {
+    listOfPlayer.clear();
     QuerySnapshot response =
         await FirebaseFirestore.instance.collection('Player Info').get();
     for (int i = 0; i < response.docs.length; i++) {
@@ -153,7 +154,7 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                         content: Text("Update Successfully"),
                       ),
                     );
-
+                    getData();
                     isUpdateDate = false;
                     setState(() {});
                   } else {
@@ -175,7 +176,7 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                           content: Text("Data Added"),
                         ),
                       );
-
+                      listOfPlayer.clear();
                       QuerySnapshot response = await FirebaseFirestore.instance
                           .collection('Player Info')
                           .get();
@@ -188,6 +189,9 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                           ),
                         );
                       }
+                      setState(() {});
+                      // setState() {}
+                      ;
                     }
                   }
 
