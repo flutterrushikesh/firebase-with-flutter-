@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:player_info/view/player_data_screen.dart';
+import 'package:player_info/view/session_data.dart';
 import 'package:player_info/view/widget/custom_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -92,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
 
                             CustomSnackbar.customSnackbar(
+                                // ignore: use_build_context_synchronously
                                 context: context,
                                 message: "Registered Successfully");
                             passwordTextController.clear();
@@ -102,7 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             log("{${e.message}}");
 
                             CustomSnackbar.customSnackbar(
-                                context: context, message: e.message!);
+                                // ignore: use_build_context_synchronously
+                                context: context,
+                                message: e.message!);
                           }
                         } else {
                           try {
@@ -117,9 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             emailTextController.clear();
 
                             CustomSnackbar.customSnackbar(
+                                // ignore: use_build_context_synchronously
                                 context: context,
                                 message: "Successfully Loged In");
-
+                            SessionData.setSessionData(setLogin: true);
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) => const PlayerDataScreen(),
@@ -128,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           } on FirebaseAuthException catch (e) {
                             if (e.code == "invalid-credential") {
                               CustomSnackbar.customSnackbar(
+                                  // ignore: use_build_context_synchronously
                                   context: context,
                                   message:
                                       "Please check your Email Id & Password");

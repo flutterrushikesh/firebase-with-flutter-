@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:player_info/model/player_model.dart';
 import 'package:player_info/view/login_screen.dart';
+import 'package:player_info/view/session_data.dart';
 
 class PlayerDataScreen extends StatefulWidget {
   const PlayerDataScreen({super.key});
@@ -32,6 +32,27 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
   bool isGetLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  void getData() async {
+    QuerySnapshot response =
+        await FirebaseFirestore.instance.collection('Player Info').get();
+    for (int i = 0; i < response.docs.length; i++) {
+      listOfPlayer.add(
+        PlayerModel(
+          id: response.docs[i].id,
+          jNo: response.docs[i]['jNo'],
+          pName: response.docs[i]['pName'],
+        ),
+      );
+    }
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -47,6 +68,8 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
+
+              SessionData.setSessionData(setLogin: false);
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => const LoginScreen(),
@@ -130,7 +153,6 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                         content: Text("Update Successfully"),
                       ),
                     );
-                    listOfPlayer.clear();
 
                     isUpdateDate = false;
                     setState(() {});
@@ -145,27 +167,30 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                       });
                       playerNameController.clear();
                       jerseyNoController.clear();
+                      listOfPlayer.clear();
+
+                      // ignore: use_build_context_synchronously
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Data Added"),
                         ),
                       );
-                      listOfPlayer.clear();
+
+                      QuerySnapshot response = await FirebaseFirestore.instance
+                          .collection('Player Info')
+                          .get();
+                      for (int i = 0; i < response.docs.length; i++) {
+                        listOfPlayer.add(
+                          PlayerModel(
+                            id: response.docs[i].id,
+                            jNo: response.docs[i]['jNo'],
+                            pName: response.docs[i]['pName'],
+                          ),
+                        );
+                      }
                     }
                   }
-                  listOfPlayer.clear();
-                  QuerySnapshot response = await FirebaseFirestore.instance
-                      .collection('Player Info')
-                      .get();
-                  for (int i = 0; i < response.docs.length; i++) {
-                    listOfPlayer.add(
-                      PlayerModel(
-                        id: response.docs[i].id,
-                        jNo: response.docs[i]['jNo'],
-                        pName: response.docs[i]['pName'],
-                      ),
-                    );
-                  }
+
                   setState(() {});
                   isAddLoading = false;
                 },
@@ -226,6 +251,7 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                                 .collection('Player Info')
                                 .doc(listOfPlayer[index].id)
                                 .delete();
+                            // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -250,7 +276,7 @@ class _PlayerDataScreenState extends State<PlayerDataScreen> {
                                   .instance
                                   .collection('Player Info')
                                   .get();
-                              log("${response.docs[index]['pName']}");
+
                               id = response.docs[index].id;
                               playerNameController.text =
                                   response.docs[index]['pName'];
